@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-commerce Profit Calculator</title>
+  <style>
+    body{font-family:system-ui,Arial; margin:16px; max-width:900px}
+    h1{margin:0 0 12px}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .card{border:1px solid #ddd; border-radius:12px; padding:12px}
+    label{display:block; font-size:12px; opacity:.8; margin-bottom:6px}
+    input, select{width:100%; padding:10px; border-radius:10px; border:1px solid #ccc}
+    .row{display:flex; gap:10px}
+    .row > *{flex:1}
+    .out{font-size:22px; font-weight:700}
+    table{width:100%; border-collapse:collapse}
+    td{padding:8px 0; border-bottom:1px solid #eee}
+    .muted{opacity:.7; font-size:12px}
+    @media (max-width:700px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <h1>E-commerce Profit Calculator</h1>
+  <p class="muted">Presets are estimates. Fees vary by category/country. You can edit everything.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Inputs</h3>
+
+      <div class="row">
+        <div>
+          <label>Currency</label>
+          <select id="currency">
+            <option value="PKR">PKR</option>
+            <option value="USD">USD</option>
+            <option value="AED">AED</option>
+            <option value="GBP">GBP</option>
+          </select>
+        </div>
+        <div>
+          <label>Platform Preset</label>
+          <select id="platform"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Selling Price (SP)</label>
+          <input id="sp" type="number" value="5000" />
+        </div>
+        <div>
+          <label>Product Cost (COGS)</label>
+          <input id="cogs" type="number" value="2500" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Shipping (Seller paid)</label>
+          <input id="ship" type="number" value="250" />
+        </div>
+        <div>
+          <label>Packaging / Other</label>
+          <input id="pack" type="number" value="50" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Ads Cost per Order</label>
+          <input id="ads" type="number" value="0" />
+        </div>
+        <div>
+          <label>Fixed Fees (per order)</label>
+          <input id="fixed" type="number" value="0" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Commission / Platform Fee (%)</label>
+          <input id="pf" type="number" value="10" />
+        </div>
+        <div>
+          <label>Payment Fee (%)</label>
+          <input id="pg" type="number" value="2.5" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label><input id="returnsOn" type="checkbox" /> Include Returns</label>
+          <div class="muted">Optional (advanced)</div>
+        </div>
+        <div></div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Return Rate (%)</label>
+          <input id="rr" type="number" value="5" disabled />
+        </div>
+        <div>
+          <label>Loss per Return</label>
+          <input id="rl" type="number" value="400" disabled />
+        </div>
+      </div>
+
+      <button id="resetBtn" style="margin-top:10px; padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; cursor:pointer;">
+        Reset to preset
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>Results</h3>
+      <div class="row">
+        <div>
+          <div class="muted">Profit</div>
+          <div class="out" id="profitOut">—</div>
+        </div>
+        <div>
+          <div class="muted">Profit %</div>
+          <div class="out" id="marginOut">—</div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px" class="row">
+        <div>
+          <div class="muted">Total Fees</div>
+          <div class="out" id="feesOut">—</div>
+        </div>
+        <div>
+          <div class="muted">Total Cost</div>
+          <div class="out" id="costOut">—</div>
+        </div>
+      </div>
+
+      <h4 style="margin-top:14px">Breakdown</h4>
+      <table>
+        <tbody>
+          <tr><td>COGS</td><td style="text-align:right" id="bCogs">—</td></tr>
+          <tr><td>Shipping</td><td style="text-align:right" id="bShip">—</td></tr>
+          <tr><td>Packaging/Other</td><td style="text-align:right" id="bPack">—</td></tr>
+          <tr><td>Ads</td><td style="text-align:right" id="bAds">—</td></tr>
+          <tr><td>Platform Fee</td><td style="text-align:right" id="bPf">—</td></tr>
+          <tr><td>Payment Fee</td><td style="text-align:right" id="bPg">—</td></tr>
+          <tr><td>Fixed Fees</td><td style="text-align:right" id="bFixed">—</td></tr>
+          <tr><td>Expected Return Cost</td><td style="text-align:right" id="bRet">—</td></tr>
+        </tbody>
+      </table>
+
+      <p class="muted" style="margin-top:10px">
+        Tip: Add AdSense later by inserting their script tag on this page.
+      </p>
+    </div>
+  </div>
+
+<script>
+  const presets = [
+    { id:"custom", name:"Custom", pf:10, pg:2.5, fixed:0 },
+    { id:"daraz", name:"Daraz (estimate)", pf:8, pg:2.5, fixed:0 },
+    { id:"amazon", name:"Amazon (estimate)", pf:15, pg:0, fixed:0 },
+    { id:"ebay", name:"eBay (estimate)", pf:13, pg:2.9, fixed:0 },
+    { id:"etsy", name:"Etsy (estimate)", pf:9.5, pg:3, fixed:0 },
+    { id:"shopify", name:"Shopify (store) - payment only", pf:0, pg:2.9, fixed:0 }
+  ];
+
+  const el = (id) => document.getElementById(id);
+
+  function fmt(n){
+    const cur = el("currency").value;
+    return `${cur} ${Number(n||0).toFixed(2)}`;
+  }
+
+  function loadPlatforms(){
+    const p = el("platform");
+    p.innerHTML = "";
+    presets.forEach(x=>{
+      const opt = document.createElement("option");
+      opt.value = x.id;
+      opt.textContent = x.name;
+      p.appendChild(opt);
+    });
+  }
+
+  function applyPreset(){
+    const id = el("platform").value;
+    const pr = presets.find(x=>x.id===id) || presets[0];
+    el("pf").value = pr.pf;
+    el("pg").value = pr.pg;
+    el("fixed").value = pr.fixed;
+    calc();
+  }
+
+  function calc(){
+    const sp = Number(el("sp").value||0);
+    const cogs = Number(el("cogs").value||0);
+    const ship = Number(el("ship").value||0);
+    const pack = Number(el("pack").value||0);
+    const ads = Number(el("ads").value||0);
+
+    const pfPct = Number(el("pf").value||0)/100;
+    const pgPct = Number(el("pg").value||0)/100;
+    const fixed = Number(el("fixed").value||0);
+
+    const pfFee = sp * pfPct;
+    const pgFee = sp * pgPct;
+
+    let retCost = 0;
+    if(el("returnsOn").checked){
+      const rr = Number(el("rr").value||0)/100;
+      const rl = Number(el("rl").value||0);
+      retCost = rr * rl;
+    }
+
+    const fees = pfFee + pgFee + fixed;
+    const totalCost = cogs + ship + pack + ads + fees + retCost;
+    const profit = sp - totalCost;
+    const margin = sp > 0 ? (profit/sp)*100 : 0;
+
+    el("profitOut").textContent = fmt(profit);
+    el("marginOut").textContent = `${margin.toFixed(2)}%`;
+    el("feesOut").textContent = fmt(fees);
+    el("costOut").textContent = fmt(totalCost);
+
+    el("bCogs").textContent = fmt(cogs);
+    el("bShip").textContent = fmt(ship);
+    el("bPack").textContent = fmt(pack);
+    el("bAds").textContent = fmt(ads);
+    el("bPf").textContent = fmt(pfFee);
+    el("bPg").textContent = fmt(pgFee);
+    el("bFixed").textContent = fmt(fixed);
+    el("bRet").textContent = fmt(retCost);
+  }
+
+  // Events
+  ["currency","platform","sp","cogs","ship","pack","ads","pf","pg","fixed","rr","rl","returnsOn"]
+    .forEach(id => el(id).addEventListener("input", () => {
+      const on = el("returnsOn").checked;
+      el("rr").disabled = !on;
+      el("rl").disabled = !on;
+      calc();
+    }));
+
+  el("resetBtn").addEventListener("click", applyPreset);
+
+  // Init
+  loadPlatforms();
+  el("platform").value = "custom";
+  applyPreset();
+</script>
+</body>
+  </html>
+            
