@@ -1,32 +1,54 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>E-commerce Profit Calculator</title>
+  <title>SellSmart – E-commerce Profit Calculator</title>
+  <meta name="description" content="Calculate e-commerce profit by subtracting product cost, shipping, ads, and platform/payment fees. Works for Daraz, Amazon, Shopify and more (editable presets)." />
+
   <style>
-    body{font-family:system-ui,Arial; margin:16px; max-width:900px}
+    body{font-family:system-ui,Arial; margin:16px; max-width:980px}
     h1{margin:0 0 12px}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    .card{border:1px solid #ddd; border-radius:12px; padding:12px}
-    label{display:block; font-size:12px; opacity:.8; margin-bottom:6px}
-    input, select{width:100%; padding:10px; border-radius:10px; border:1px solid #ccc}
+    .muted{opacity:.75; font-size:12px}
+    .grid{display:grid; grid-template-columns:1.05fr .95fr; gap:12px; align-items:start}
+    .card{border:1px solid #ddd; border-radius:14px; padding:14px; background:#fff}
+    label{display:block; font-size:12px; opacity:.85; margin-bottom:6px}
+    input, select{width:100%; padding:12px; border-radius:12px; border:1px solid #ccc; font-size:16px}
     .row{display:flex; gap:10px}
     .row > *{flex:1}
-    .out{font-size:22px; font-weight:700}
+    .out{font-size:22px; font-weight:800; word-break:break-word}
     table{width:100%; border-collapse:collapse}
     td{padding:8px 0; border-bottom:1px solid #eee}
-    .muted{opacity:.7; font-size:12px}
-    @media (max-width:700px){.grid{grid-template-columns:1fr}}
+    button{margin-top:10px; padding:11px 12px; border-radius:12px; border:1px solid #ccc; background:#fff; cursor:pointer; font-size:16px}
+    details summary{user-select:none}
+
+    @media (max-width:700px){
+      body{margin:12px}
+      .grid{grid-template-columns:1fr}
+      .row{flex-direction:column}
+    }
   </style>
 </head>
 <body>
-  <h1>E-commerce Profit Calculator</h1>
-  <p class="muted">Presets are estimates. Fees vary by category/country. You can edit everything.</p>
+  <h1>SellSmart – E-commerce Profit Calculator</h1>
+  <p class="muted">Presets are estimates. Fees vary by country/category/seller tier. You can edit everything.</p>
+
+  <!-- Guidance / How it works -->
+  <div class="card" style="margin:12px 0;">
+    <h3 style="margin:0 0 6px;">How this calculator works</h3>
+    <ul class="muted" style="margin:0; padding-left:18px; line-height:1.6;">
+      <li><b>Selling Price</b> se hum sab costs minus karte hain: Product cost, shipping, packaging, ads, aur platform/payment fees.</li>
+      <li><b>Platform preset</b> sirf estimated defaults load karta hai — aap apne account ke mutabiq fees edit kar sakte hain.</li>
+      <li><b>Profit</b> = Selling Price − (All Costs + Fees)</li>
+      <li><b>Returns</b> ON karne se “expected return loss” add hota hai (Return Rate × Loss per Return).</li>
+    </ul>
+  </div>
 
   <div class="grid">
+    <!-- Inputs -->
     <div class="card">
-      <h3>Inputs</h3>
+      <h3 style="margin-top:0;">Inputs</h3>
 
       <div class="row">
         <div>
@@ -47,48 +69,50 @@
       <div class="row">
         <div>
           <label>Selling Price (SP)</label>
-          <input id="sp" type="number" value="5000" />
+          <input id="sp" type="number" inputmode="decimal" value="5000" />
         </div>
         <div>
           <label>Product Cost (COGS)</label>
-          <input id="cogs" type="number" value="2500" />
+          <input id="cogs" type="number" inputmode="decimal" value="2500" />
         </div>
       </div>
 
       <div class="row">
         <div>
           <label>Shipping (Seller paid)</label>
-          <input id="ship" type="number" value="250" />
+          <input id="ship" type="number" inputmode="decimal" value="250" />
         </div>
         <div>
           <label>Packaging / Other</label>
-          <input id="pack" type="number" value="50" />
+          <input id="pack" type="number" inputmode="decimal" value="50" />
         </div>
       </div>
 
       <div class="row">
         <div>
           <label>Ads Cost per Order</label>
-          <input id="ads" type="number" value="0" />
+          <input id="ads" type="number" inputmode="decimal" value="0" />
         </div>
         <div>
           <label>Fixed Fees (per order)</label>
-          <input id="fixed" type="number" value="0" />
+          <input id="fixed" type="number" inputmode="decimal" value="0" />
         </div>
       </div>
 
       <div class="row">
         <div>
           <label>Commission / Platform Fee (%)</label>
-          <input id="pf" type="number" value="10" />
+          <input id="pf" type="number" inputmode="decimal" value="10" />
+          <div class="muted">Example: marketplace commission / service fee</div>
         </div>
         <div>
           <label>Payment Fee (%)</label>
-          <input id="pg" type="number" value="2.5" />
+          <input id="pg" type="number" inputmode="decimal" value="2.5" />
+          <div class="muted">Example: card / gateway fee</div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" style="align-items:center;">
         <div>
           <label><input id="returnsOn" type="checkbox" /> Include Returns</label>
           <div class="muted">Optional (advanced)</div>
@@ -99,21 +123,24 @@
       <div class="row">
         <div>
           <label>Return Rate (%)</label>
-          <input id="rr" type="number" value="5" disabled />
+          <input id="rr" type="number" inputmode="decimal" value="5" disabled />
         </div>
         <div>
           <label>Loss per Return</label>
-          <input id="rl" type="number" value="400" disabled />
+          <input id="rl" type="number" inputmode="decimal" value="400" disabled />
         </div>
       </div>
 
-      <button id="resetBtn" style="margin-top:10px; padding:10px 12px; border-radius:10px; border:1px solid #ccc; background:#fff; cursor:pointer;">
-        Reset to preset
-      </button>
+      <button id="resetBtn" type="button">Reset to preset</button>
+      <div class="muted" style="margin-top:8px;">
+        Tip: Agar aap “Custom” use kar rahe hain, to apni exact fees yahan set kar ke profit check karein.
+      </div>
     </div>
 
+    <!-- Results -->
     <div class="card">
-      <h3>Results</h3>
+      <h3 style="margin-top:0;">Results</h3>
+
       <div class="row">
         <div>
           <div class="muted">Profit</div>
@@ -136,7 +163,7 @@
         </div>
       </div>
 
-      <h4 style="margin-top:14px">Breakdown</h4>
+      <h4 style="margin-top:14px;">Breakdown</h4>
       <table>
         <tbody>
           <tr><td>COGS</td><td style="text-align:right" id="bCogs">—</td></tr>
@@ -150,27 +177,45 @@
         </tbody>
       </table>
 
-      <p class="muted" style="margin-top:10px">
-        Tip: Add AdSense later by inserting their script tag on this page.
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:800;">Formula & Notes</summary>
+        <div class="muted" style="margin-top:8px; line-height:1.7;">
+          <div><b>Total Fees</b> = (SP × Platform Fee%) + (SP × Payment Fee%) + Fixed Fees</div>
+          <div><b>Total Cost</b> = COGS + Shipping + Packaging + Ads + Total Fees + Expected Return Cost</div>
+          <div><b>Profit</b> = SP − Total Cost</div>
+          <div style="margin-top:8px;">
+            Note: Platform fees category/country ke mutabiq change ho sakti hain. Presets estimates hain.
+          </div>
+        </div>
+      </details>
+
+      <p class="muted" style="margin-top:10px;">
+        Monetization tip: AdSense slot ko “Results” ke neeche place karna usually best hota hai.
       </p>
     </div>
   </div>
 
 <script>
+  // Estimated presets (editable by user)
   const presets = [
-    { id:"custom", name:"Custom", pf:10, pg:2.5, fixed:0 },
-    { id:"daraz", name:"Daraz (estimate)", pf:8, pg:2.5, fixed:0 },
-    { id:"amazon", name:"Amazon (estimate)", pf:15, pg:0, fixed:0 },
-    { id:"ebay", name:"eBay (estimate)", pf:13, pg:2.9, fixed:0 },
-    { id:"etsy", name:"Etsy (estimate)", pf:9.5, pg:3, fixed:0 },
-    { id:"shopify", name:"Shopify (store) - payment only", pf:0, pg:2.9, fixed:0 }
+    { id:"custom",  name:"Custom",                       pf:10,  pg:2.5, fixed:0 },
+    { id:"daraz",   name:"Daraz (estimate)",             pf:8,   pg:2.5, fixed:0 },
+    { id:"amazon",  name:"Amazon (estimate)",            pf:15,  pg:0.0, fixed:0 },
+    { id:"ebay",    name:"eBay (estimate)",              pf:13,  pg:2.9, fixed:0 },
+    { id:"etsy",    name:"Etsy (estimate)",              pf:9.5, pg:3.0, fixed:0 },
+    { id:"shopify", name:"Shopify (store) - payment only",pf:0,  pg:2.9, fixed:0 }
   ];
 
   const el = (id) => document.getElementById(id);
 
+  function safeNum(v){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  }
+
   function fmt(n){
     const cur = el("currency").value;
-    return `${cur} ${Number(n||0).toFixed(2)}`;
+    return `${cur} ${safeNum(n).toFixed(2)}`;
   }
 
   function loadPlatforms(){
@@ -194,30 +239,30 @@
   }
 
   function calc(){
-    const sp = Number(el("sp").value||0);
-    const cogs = Number(el("cogs").value||0);
-    const ship = Number(el("ship").value||0);
-    const pack = Number(el("pack").value||0);
-    const ads = Number(el("ads").value||0);
+    const sp   = safeNum(el("sp").value);
+    const cogs = safeNum(el("cogs").value);
+    const ship = safeNum(el("ship").value);
+    const pack = safeNum(el("pack").value);
+    const ads  = safeNum(el("ads").value);
 
-    const pfPct = Number(el("pf").value||0)/100;
-    const pgPct = Number(el("pg").value||0)/100;
-    const fixed = Number(el("fixed").value||0);
+    const pfPct = safeNum(el("pf").value) / 100;
+    const pgPct = safeNum(el("pg").value) / 100;
+    const fixed = safeNum(el("fixed").value);
 
     const pfFee = sp * pfPct;
     const pgFee = sp * pgPct;
 
     let retCost = 0;
     if(el("returnsOn").checked){
-      const rr = Number(el("rr").value||0)/100;
-      const rl = Number(el("rl").value||0);
+      const rr = safeNum(el("rr").value) / 100;
+      const rl = safeNum(el("rl").value);
       retCost = rr * rl;
     }
 
     const fees = pfFee + pgFee + fixed;
     const totalCost = cogs + ship + pack + ads + fees + retCost;
     const profit = sp - totalCost;
-    const margin = sp > 0 ? (profit/sp)*100 : 0;
+    const margin = sp > 0 ? (profit / sp) * 100 : 0;
 
     el("profitOut").textContent = fmt(profit);
     el("marginOut").textContent = `${margin.toFixed(2)}%`;
@@ -234,22 +279,29 @@
     el("bRet").textContent = fmt(retCost);
   }
 
-  // Events
-  ["currency","platform","sp","cogs","ship","pack","ads","pf","pg","fixed","rr","rl","returnsOn"]
-    .forEach(id => el(id).addEventListener("input", () => {
-      const on = el("returnsOn").checked;
-      el("rr").disabled = !on;
-      el("rl").disabled = !on;
-      calc();
-    }));
+  function toggleReturnsUI(){
+    const on = el("returnsOn").checked;
+    el("rr").disabled = !on;
+    el("rl").disabled = !on;
+  }
 
+  // Events
+  ["currency","platform","sp","cogs","ship","pack","ads","pf","pg","fixed","rr","rl"]
+    .forEach(id => el(id).addEventListener("input", () => { calc(); }));
+
+  el("returnsOn").addEventListener("input", () => {
+    toggleReturnsUI();
+    calc();
+  });
+
+  el("platform").addEventListener("change", applyPreset);
   el("resetBtn").addEventListener("click", applyPreset);
 
   // Init
   loadPlatforms();
   el("platform").value = "custom";
+  toggleReturnsUI();
   applyPreset();
 </script>
 </body>
-  </html>
-            
+</html>
