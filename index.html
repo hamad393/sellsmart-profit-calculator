@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SellSmart – E-commerce Profit Calculator</title>
-  <meta name="description" content="Calculate e-commerce profit by subtracting product cost, shipping, ads, and platform/payment fees. Works for Daraz, Amazon, Shopify and more (editable presets)." />
+  <meta name="description" content="Calculate your e-commerce profit by subtracting product cost, shipping, advertising, and platform or payment fees. Supports marketplaces and online stores with editable presets." />
 
   <style>
     body{font-family:system-ui,Arial; margin:16px; max-width:980px}
@@ -31,277 +31,248 @@
   </style>
 </head>
 <body>
-  <h1>SellSmart – E-commerce Profit Calculator</h1>
-  <p class="muted">Presets are estimates. Fees vary by country/category/seller tier. You can edit everything.</p>
 
-  <!-- Guidance / How it works -->
-  <div class="card" style="margin:12px 0;">
-    <h3 style="margin:0 0 6px;">How this calculator works</h3>
-    <ul class="muted" style="margin:0; padding-left:18px; line-height:1.6;">
-      <li><b>Selling Price</b> se hum sab costs minus karte hain: Product cost, shipping, packaging, ads, aur platform/payment fees.</li>
-      <li><b>Platform preset</b> sirf estimated defaults load karta hai — aap apne account ke mutabiq fees edit kar sakte hain.</li>
-      <li><b>Profit</b> = Selling Price − (All Costs + Fees)</li>
-      <li><b>Returns</b> ON karne se “expected return loss” add hota hai (Return Rate × Loss per Return).</li>
-    </ul>
-  </div>
+<h1>SellSmart – E-commerce Profit Calculator</h1>
+<p class="muted">
+  Preset fee values are estimates only. Always adjust fees according to your actual marketplace or payment provider account.
+</p>
 
-  <div class="grid">
-    <!-- Inputs -->
-    <div class="card">
-      <h3 style="margin-top:0;">Inputs</h3>
+<!-- HOW IT WORKS -->
+<div class="card" style="margin:12px 0;">
+  <h3 style="margin:0 0 6px;">How this calculator works</h3>
+  <ul class="muted" style="margin:0; padding-left:18px; line-height:1.6;">
+    <li>This tool calculates your estimated net profit by subtracting all costs and fees from the selling price.</li>
+    <li>Costs may include product cost, shipping, packaging, advertising, and platform or payment processing fees.</li>
+    <li>Platform presets load default estimated fees for convenience and can be edited at any time.</li>
+    <li>Profit is calculated as: <b>Selling Price − Total Costs</b>.</li>
+    <li>If returns are enabled, an expected return loss is added using the selected return rate and loss per return.</li>
+  </ul>
+</div>
 
-      <div class="row">
-        <div>
-          <label>Currency</label>
-          <select id="currency">
-            <option value="PKR">PKR</option>
-            <option value="USD">USD</option>
-            <option value="AED">AED</option>
-            <option value="GBP">GBP</option>
-          </select>
-        </div>
-        <div>
-          <label>Platform Preset</label>
-          <select id="platform"></select>
-        </div>
+<div class="grid">
+
+  <!-- INPUTS -->
+  <div class="card">
+    <h3 style="margin-top:0;">Inputs</h3>
+
+    <div class="row">
+      <div>
+        <label>Currency</label>
+        <select id="currency">
+          <option value="PKR">PKR</option>
+          <option value="USD">USD</option>
+          <option value="AED">AED</option>
+          <option value="GBP">GBP</option>
+        </select>
       </div>
-
-      <div class="row">
-        <div>
-          <label>Selling Price (SP)</label>
-          <input id="sp" type="number" inputmode="decimal" value="5000" />
-        </div>
-        <div>
-          <label>Product Cost (COGS)</label>
-          <input id="cogs" type="number" inputmode="decimal" value="2500" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Shipping (Seller paid)</label>
-          <input id="ship" type="number" inputmode="decimal" value="250" />
-        </div>
-        <div>
-          <label>Packaging / Other</label>
-          <input id="pack" type="number" inputmode="decimal" value="50" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Ads Cost per Order</label>
-          <input id="ads" type="number" inputmode="decimal" value="0" />
-        </div>
-        <div>
-          <label>Fixed Fees (per order)</label>
-          <input id="fixed" type="number" inputmode="decimal" value="0" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Commission / Platform Fee (%)</label>
-          <input id="pf" type="number" inputmode="decimal" value="10" />
-          <div class="muted">Example: marketplace commission / service fee</div>
-        </div>
-        <div>
-          <label>Payment Fee (%)</label>
-          <input id="pg" type="number" inputmode="decimal" value="2.5" />
-          <div class="muted">Example: card / gateway fee</div>
-        </div>
-      </div>
-
-      <div class="row" style="align-items:center;">
-        <div>
-          <label><input id="returnsOn" type="checkbox" /> Include Returns</label>
-          <div class="muted">Optional (advanced)</div>
-        </div>
-        <div></div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label>Return Rate (%)</label>
-          <input id="rr" type="number" inputmode="decimal" value="5" disabled />
-        </div>
-        <div>
-          <label>Loss per Return</label>
-          <input id="rl" type="number" inputmode="decimal" value="400" disabled />
-        </div>
-      </div>
-
-      <button id="resetBtn" type="button">Reset to preset</button>
-      <div class="muted" style="margin-top:8px;">
-        Tip: Agar aap “Custom” use kar rahe hain, to apni exact fees yahan set kar ke profit check karein.
+      <div>
+        <label>Platform Preset</label>
+        <select id="platform"></select>
       </div>
     </div>
 
-    <!-- Results -->
-    <div class="card">
-      <h3 style="margin-top:0;">Results</h3>
-
-      <div class="row">
-        <div>
-          <div class="muted">Profit</div>
-          <div class="out" id="profitOut">—</div>
-        </div>
-        <div>
-          <div class="muted">Profit %</div>
-          <div class="out" id="marginOut">—</div>
-        </div>
+    <div class="row">
+      <div>
+        <label>Selling Price</label>
+        <input id="sp" type="number" value="5000" />
       </div>
-
-      <div style="margin-top:10px" class="row">
-        <div>
-          <div class="muted">Total Fees</div>
-          <div class="out" id="feesOut">—</div>
-        </div>
-        <div>
-          <div class="muted">Total Cost</div>
-          <div class="out" id="costOut">—</div>
-        </div>
+      <div>
+        <label>Product Cost (COGS)</label>
+        <input id="cogs" type="number" value="2500" />
       </div>
-
-      <h4 style="margin-top:14px;">Breakdown</h4>
-      <table>
-        <tbody>
-          <tr><td>COGS</td><td style="text-align:right" id="bCogs">—</td></tr>
-          <tr><td>Shipping</td><td style="text-align:right" id="bShip">—</td></tr>
-          <tr><td>Packaging/Other</td><td style="text-align:right" id="bPack">—</td></tr>
-          <tr><td>Ads</td><td style="text-align:right" id="bAds">—</td></tr>
-          <tr><td>Platform Fee</td><td style="text-align:right" id="bPf">—</td></tr>
-          <tr><td>Payment Fee</td><td style="text-align:right" id="bPg">—</td></tr>
-          <tr><td>Fixed Fees</td><td style="text-align:right" id="bFixed">—</td></tr>
-          <tr><td>Expected Return Cost</td><td style="text-align:right" id="bRet">—</td></tr>
-        </tbody>
-      </table>
-
-      <details style="margin-top:12px;">
-        <summary style="cursor:pointer; font-weight:800;">Formula & Notes</summary>
-        <div class="muted" style="margin-top:8px; line-height:1.7;">
-          <div><b>Total Fees</b> = (SP × Platform Fee%) + (SP × Payment Fee%) + Fixed Fees</div>
-          <div><b>Total Cost</b> = COGS + Shipping + Packaging + Ads + Total Fees + Expected Return Cost</div>
-          <div><b>Profit</b> = SP − Total Cost</div>
-          <div style="margin-top:8px;">
-            Note: Platform fees category/country ke mutabiq change ho sakti hain. Presets estimates hain.
-          </div>
-        </div>
-      </details>
-
-      <p class="muted" style="margin-top:10px;">
-        Monetization tip: AdSense slot ko “Results” ke neeche place karna usually best hota hai.
-      </p>
     </div>
+
+    <div class="row">
+      <div>
+        <label>Shipping Cost (Seller paid)</label>
+        <input id="ship" type="number" value="250" />
+      </div>
+      <div>
+        <label>Packaging / Other Costs</label>
+        <input id="pack" type="number" value="50" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Advertising Cost per Order</label>
+        <input id="ads" type="number" value="0" />
+      </div>
+      <div>
+        <label>Fixed Fees (per order)</label>
+        <input id="fixed" type="number" value="0" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Platform / Marketplace Fee (%)</label>
+        <input id="pf" type="number" value="10" />
+      </div>
+      <div>
+        <label>Payment Processing Fee (%)</label>
+        <input id="pg" type="number" value="2.5" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label><input id="returnsOn" type="checkbox" /> Include Returns</label>
+        <div class="muted">Optional advanced calculation</div>
+      </div>
+      <div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Return Rate (%)</label>
+        <input id="rr" type="number" value="5" disabled />
+      </div>
+      <div>
+        <label>Loss per Return</label>
+        <input id="rl" type="number" value="400" disabled />
+      </div>
+    </div>
+
+    <button id="resetBtn" type="button">Reset to Preset</button>
   </div>
+
+  <!-- RESULTS -->
+  <div class="card">
+    <h3 style="margin-top:0;">Results</h3>
+
+    <div class="row">
+      <div>
+        <div class="muted">Estimated Profit</div>
+        <div class="out" id="profitOut">—</div>
+      </div>
+      <div>
+        <div class="muted">Profit Margin</div>
+        <div class="out" id="marginOut">—</div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px" class="row">
+      <div>
+        <div class="muted">Total Fees</div>
+        <div class="out" id="feesOut">—</div>
+      </div>
+      <div>
+        <div class="muted">Total Cost</div>
+        <div class="out" id="costOut">—</div>
+      </div>
+    </div>
+
+    <h4 style="margin-top:14px;">Cost Breakdown</h4>
+    <table>
+      <tbody>
+        <tr><td>Product Cost</td><td style="text-align:right" id="bCogs">—</td></tr>
+        <tr><td>Shipping</td><td style="text-align:right" id="bShip">—</td></tr>
+        <tr><td>Packaging / Other</td><td style="text-align:right" id="bPack">—</td></tr>
+        <tr><td>Advertising</td><td style="text-align:right" id="bAds">—</td></tr>
+        <tr><td>Platform Fees</td><td style="text-align:right" id="bPf">—</td></tr>
+        <tr><td>Payment Fees</td><td style="text-align:right" id="bPg">—</td></tr>
+        <tr><td>Fixed Fees</td><td style="text-align:right" id="bFixed">—</td></tr>
+        <tr><td>Expected Return Cost</td><td style="text-align:right" id="bRet">—</td></tr>
+      </tbody>
+    </table>
+
+    <details style="margin-top:12px;">
+      <summary style="cursor:pointer; font-weight:800;">Formulas & Important Notes</summary>
+      <div class="muted" style="margin-top:8px; line-height:1.7;">
+        <div><b>Total Percentage Fees</b> = Selling Price × (Platform Fee % + Payment Fee %)</div>
+        <div><b>Total Fees</b> = Total Percentage Fees + Fixed Fees</div>
+        <div><b>Total Cost</b> = Product Cost + Shipping + Packaging + Ads + Total Fees + Expected Return Cost</div>
+        <div><b>Profit</b> = Selling Price − Total Cost</div>
+
+        <div style="margin-top:10px;">
+          Platform fees vary by country, category, seller tier, and payment method.
+          Preset values are estimates only and should not be considered official rates.
+        </div>
+      </div>
+    </details>
+
+    <p class="muted" style="margin-top:10px;">
+      This tool is free to use. Advertisements may be displayed to support ongoing maintenance and improvements.
+    </p>
+
+    <p class="muted">
+      Disclaimer: Calculations are for estimation purposes only. We are not affiliated with any marketplace or payment provider.
+    </p>
+  </div>
+
+</div>
 
 <script>
-  // Estimated presets (editable by user)
-  const presets = [
-    { id:"custom",  name:"Custom",                       pf:10,  pg:2.5, fixed:0 },
-    { id:"daraz",   name:"Daraz (estimate)",             pf:8,   pg:2.5, fixed:0 },
-    { id:"amazon",  name:"Amazon (estimate)",            pf:15,  pg:0.0, fixed:0 },
-    { id:"ebay",    name:"eBay (estimate)",              pf:13,  pg:2.9, fixed:0 },
-    { id:"etsy",    name:"Etsy (estimate)",              pf:9.5, pg:3.0, fixed:0 },
-    { id:"shopify", name:"Shopify (store) - payment only",pf:0,  pg:2.9, fixed:0 }
-  ];
+const presets=[
+  {id:"custom",name:"Custom",pf:10,pg:2.5,fixed:0},
+  {id:"daraz",name:"Daraz (Estimate)",pf:8,pg:2.5,fixed:0},
+  {id:"amazon",name:"Amazon (Estimate)",pf:15,pg:0,fixed:0},
+  {id:"ebay",name:"eBay (Estimate)",pf:13,pg:2.9,fixed:0},
+  {id:"etsy",name:"Etsy (Estimate)",pf:9.5,pg:3,fixed:0},
+  {id:"shopify",name:"Shopify (Payment Only)",pf:0,pg:2.9,fixed:0}
+];
 
-  const el = (id) => document.getElementById(id);
+const el=id=>document.getElementById(id);
+const num=v=>isNaN(v)?0:Number(v);
+const fmt=v=>`${el("currency").value} ${num(v).toFixed(2)}`;
 
-  function safeNum(v){
-    const n = Number(v);
-    return Number.isFinite(n) ? n : 0;
-  }
-
-  function fmt(n){
-    const cur = el("currency").value;
-    return `${cur} ${safeNum(n).toFixed(2)}`;
-  }
-
-  function loadPlatforms(){
-    const p = el("platform");
-    p.innerHTML = "";
-    presets.forEach(x=>{
-      const opt = document.createElement("option");
-      opt.value = x.id;
-      opt.textContent = x.name;
-      p.appendChild(opt);
-    });
-  }
-
-  function applyPreset(){
-    const id = el("platform").value;
-    const pr = presets.find(x=>x.id===id) || presets[0];
-    el("pf").value = pr.pf;
-    el("pg").value = pr.pg;
-    el("fixed").value = pr.fixed;
-    calc();
-  }
-
-  function calc(){
-    const sp   = safeNum(el("sp").value);
-    const cogs = safeNum(el("cogs").value);
-    const ship = safeNum(el("ship").value);
-    const pack = safeNum(el("pack").value);
-    const ads  = safeNum(el("ads").value);
-
-    const pfPct = safeNum(el("pf").value) / 100;
-    const pgPct = safeNum(el("pg").value) / 100;
-    const fixed = safeNum(el("fixed").value);
-
-    const pfFee = sp * pfPct;
-    const pgFee = sp * pgPct;
-
-    let retCost = 0;
-    if(el("returnsOn").checked){
-      const rr = safeNum(el("rr").value) / 100;
-      const rl = safeNum(el("rl").value);
-      retCost = rr * rl;
-    }
-
-    const fees = pfFee + pgFee + fixed;
-    const totalCost = cogs + ship + pack + ads + fees + retCost;
-    const profit = sp - totalCost;
-    const margin = sp > 0 ? (profit / sp) * 100 : 0;
-
-    el("profitOut").textContent = fmt(profit);
-    el("marginOut").textContent = `${margin.toFixed(2)}%`;
-    el("feesOut").textContent = fmt(fees);
-    el("costOut").textContent = fmt(totalCost);
-
-    el("bCogs").textContent = fmt(cogs);
-    el("bShip").textContent = fmt(ship);
-    el("bPack").textContent = fmt(pack);
-    el("bAds").textContent = fmt(ads);
-    el("bPf").textContent = fmt(pfFee);
-    el("bPg").textContent = fmt(pgFee);
-    el("bFixed").textContent = fmt(fixed);
-    el("bRet").textContent = fmt(retCost);
-  }
-
-  function toggleReturnsUI(){
-    const on = el("returnsOn").checked;
-    el("rr").disabled = !on;
-    el("rl").disabled = !on;
-  }
-
-  // Events
-  ["currency","platform","sp","cogs","ship","pack","ads","pf","pg","fixed","rr","rl"]
-    .forEach(id => el(id).addEventListener("input", () => { calc(); }));
-
-  el("returnsOn").addEventListener("input", () => {
-    toggleReturnsUI();
-    calc();
+function loadPlatforms(){
+  presets.forEach(p=>{
+    let o=document.createElement("option");
+    o.value=p.id;o.textContent=p.name;
+    el("platform").appendChild(o);
   });
+}
 
-  el("platform").addEventListener("change", applyPreset);
-  el("resetBtn").addEventListener("click", applyPreset);
+function applyPreset(){
+  let p=presets.find(x=>x.id===el("platform").value)||presets[0];
+  el("pf").value=p.pf; el("pg").value=p.pg; el("fixed").value=p.fixed;
+  calc();
+}
 
-  // Init
-  loadPlatforms();
-  el("platform").value = "custom";
-  toggleReturnsUI();
-  applyPreset();
+function calc(){
+  let sp=num(el("sp").value), c=num(el("cogs").value), s=num(el("ship").value),
+      p=num(el("pack").value), a=num(el("ads").value),
+      pf=sp*(num(el("pf").value)/100),
+      pg=sp*(num(el("pg").value)/100),
+      f=num(el("fixed").value);
+
+  let ret=el("returnsOn").checked?(num(el("rr").value)/100)*num(el("rl").value):0;
+  let fees=pf+pg+f;
+  let total=c+s+p+a+fees+ret;
+  let profit=sp-total;
+
+  el("profitOut").textContent=fmt(profit);
+  el("marginOut").textContent=sp?((profit/sp)*100).toFixed(2)+"%":"0%";
+  el("feesOut").textContent=fmt(fees);
+  el("costOut").textContent=fmt(total);
+
+  el("bCogs").textContent=fmt(c);
+  el("bShip").textContent=fmt(s);
+  el("bPack").textContent=fmt(p);
+  el("bAds").textContent=fmt(a);
+  el("bPf").textContent=fmt(pf);
+  el("bPg").textContent=fmt(pg);
+  el("bFixed").textContent=fmt(f);
+  el("bRet").textContent=fmt(ret);
+}
+
+["currency","platform","sp","cogs","ship","pack","ads","pf","pg","fixed","rr","rl"]
+.forEach(i=>el(i).addEventListener("input",calc));
+
+el("returnsOn").addEventListener("change",()=>{
+  el("rr").disabled=!el("returnsOn").checked;
+  el("rl").disabled=!el("returnsOn").checked;
+  calc();
+});
+
+el("resetBtn").addEventListener("click",applyPreset);
+
+loadPlatforms();
+el("platform").value="custom";
+applyPreset();
 </script>
+
 </body>
 </html>
